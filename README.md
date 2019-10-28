@@ -97,5 +97,5 @@ Plan on having one person present the slides and live demo. Please practice your
 ### Monday
 
 * **Deadline**: 5pm Pacific Submit your Slides (iOS Demo Day PR)
-* Required: **iOS Demo Day @ 6pm Pacific** (You must present to complete build week)
+* Required: **iOS Demo Day @ 7pm Pacific** (You must present to complete build week)
 
