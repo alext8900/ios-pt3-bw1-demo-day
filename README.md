@@ -16,36 +16,79 @@ The video demo is for sharing your work on your portfolio, but it is also a fall
 
 ## Links (Add your links)
 
-* Code: `<insert Github repository link here>`
-* Trello/Github Project Kanban: `<insert trello board here>`
-* Test Flight: `<insert beta signup link here>`
-* YouTube demo video: `<insert video url here>`
+* Code:                         https://github.com/FoodieFun-BuildWeek/iOS* Trello/Github Project Kanban: https://trello.com/b/K0WZFKFB/build-week* 
 
+Test Flight: https://testflight.apple.com/v1/invite/f2515ad6ab00438ba5595aa7f885ec111903da3c038a404ab53a783c7183000b5905b11c?ct=VXUQXR6S56&advp=10000&platform=ios
+
+YouTube demo video: https://youtu.be/mCb5uG8t0YY
 ## Questions (Answer indented below)
 
 1. What was your favorite feature to implement? Why?
 
-    `<Your answer here>`
+   Maybe the delete feature, i had never done a delete network request and i was happy that it worked on my first try
 
 2. What was your #1 obstacle or bug that you fixed? How did you fix it?
 
-    `<Your answer here>`
+   Information not making its way to the detail view, i fixed it because in my prepare for segue function i called the wrong view controller
   
 3. Share a chunk of code (or file) you're proud of and explain why.
 
-    `<Your answer here>`
-  
+    func deleteRestaurant(with id: Int, completion: @escaping (Result<Restaurant, NetworkError>) -> Void)
+       {
+           
+           let requestURL = baseURL.appendingPathComponent("/restaurants/\(id)")
+           
+           var request = URLRequest(url: requestURL)
+           
+           guard let userId = loginController.token?.id else { return }
+           let stringUserId = String(userId)
+           
+           request.httpMethod = HTTPMethod.delete.rawValue
+           request.setValue("application", forHTTPHeaderField: "Content-Type")
+           request.setValue(loginController.token?.token, forHTTPHeaderField: "Authorization")
+           request.setValue(stringUserId, forHTTPHeaderField: "user_id")
+           
+           URLSession.shared.dataTask(with: request) { data, response, error in
+               if let response = response as? HTTPURLResponse,
+                   response.statusCode != 204 {
+                   completion(.failure(.badAuth))
+               }
+               
+               if let _ = error {
+                   completion(.failure(.otherError))
+               }
+               
+               guard let data = data else {
+                   completion(.failure(.badData))
+                   return
+               }
+               
+               let decoder = JSONDecoder()
+
+               do {
+                   let restaurant = try decoder.decode(Restaurant.self, from: data)
+                   completion(.success(restaurant))
+               } catch {
+                   print("Error decoding restaurant after deleting: \(error)")
+                   completion(.failure(.noDecode))
+               }
+           }.resume()
+       }
+   }
+
+why because it was the first time i did a delete network request with a backend server and it actually worked
+
 4. What is your elevator pitch? (30 second description your Grandma or a 5-year old would understand)
 
-    `<Your answer here>`
+Its a food journal where you can keep up with your restaurant visits and why you liked or why you hated it.
   
 5. What is your #1 feature?
 
-    `<Your answer here>`
+   i suppose being able to edit restaurants
   
 6. What are you future goals?
 
-    `<Your answer here>`
+   Add a nearby restaurants view controller
 
 ## Required Slides (Add your Keynote to your PR)
 
